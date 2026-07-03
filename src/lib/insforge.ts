@@ -7,7 +7,8 @@ import { createClient } from "@insforge/sdk";
  * components. All auth, database, realtime, storage and AI calls go through this.
  */
 
-const baseUrl = process.env.NEXT_PUBLIC_INSFORGE_URL;
+// Trim any trailing slash — otherwise request URLs become `…app//api/…`.
+const baseUrl = process.env.NEXT_PUBLIC_INSFORGE_URL?.replace(/\/+$/, "");
 const anonKey = process.env.NEXT_PUBLIC_INSFORGE_ANON_KEY;
 
 if (!baseUrl || !anonKey) {
