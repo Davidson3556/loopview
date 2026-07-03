@@ -1,0 +1,20 @@
+[
+  {
+    "id": "TS-1001",
+    "name": "User can sign in with email and password",
+    "file": "src/app/auth/page.tsx",
+    "agent": "Claude"
+  },
+  {
+    "id": "TS-1002",
+    "name": "Dashboard renders the three loop panels",
+    "file": "src/app/dashboard/page.tsx",
+    "agent": "Claude"
+  },
+  {
+    "id": "TS-1003",
+    "name": "History generates a LOOP.md export",
+    "file": "src/lib/loopMd.ts",
+    "agent": "Claude"
+  }
+]

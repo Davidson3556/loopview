@@ -1,291 +1,337 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { AppNav } from "@/components/AppNav";
+import { LoopView } from "@/components/LoopView";
 import { DEMO_ITERATIONS } from "@/lib/demo";
-import type { LoopIteration } from "@/lib/types";
+import { useAuth } from "@/lib/AuthProvider";
+import { insforge } from "@/lib/insforge";
+import { useLoopStream } from "@/lib/useLoopStream";
+import {
+  createSession,
+  getLatestSession,
+  endSession as endSessionApi,
+  updateIteration,
+} from "@/lib/loops";
+import { simulateIteration } from "@/lib/simulateIteration";
+import { requestAiFix } from "@/lib/aiFix";
+import type { LoopIteration, LoopSession, UserSettings } from "@/lib/types";
 
 export default function DashboardPage() {
-  const iterations = DEMO_ITERATIONS;
-  const [selectedId, setSelectedId] = useState(
-    iterations[iterations.length - 1]?.id,
+  const { user, loading: authLoading } = useAuth();
+
+  const [session, setSession] = useState<LoopSession | null>(null);
+  const [sessionLoading, setSessionLoading] = useState(true);
+  const [settings, setSettings] = useState<UserSettings | null>(null);
+
+  // Load the user's latest session + connection settings once auth resolves.
+  useEffect(() => {
+    if (authLoading) return;
+    if (!user) {
+      setSessionLoading(false);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      setSessionLoading(true);
+      const [latest, settingsRes] = await Promise.all([
+        getLatestSession(user.id),
+        insforge.database
+          .from("user_settings")
+          .select("*")
+          .eq("user_id", user.id)
+          .maybeSingle(),
+      ]);
+      if (cancelled) return;
+      setSession(latest);
+      setSettings((settingsRes.data as UserSettings) ?? null);
+      setSessionLoading(false);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [user, authLoading]);
+
+  const { iterations, conn, refetch } = useLoopStream(session?.id ?? null);
+
+  const [analyzingId, setAnalyzingId] = useState<string | null>(null);
+  const analyze = useCallback(
+    async (it: LoopIteration) => {
+      setAnalyzingId(it.id);
+      const { result, error } = await requestAiFix(it);
+      if (result && !error) {
+        await updateIteration(it.id, {
+          root_cause: result.root_cause || it.root_cause,
+          ai_suggestion: JSON.stringify(result),
+        });
+        await refetch();
+      }
+      setAnalyzingId(null);
+    },
+    [refetch],
   );
-  const current =
-    iterations.find((i) => i.id === selectedId) ??
-    iterations[iterations.length - 1];
 
-  const total = iterations.length;
-  const passed = iterations.filter((i) => i.result === "pass").length;
-  const passRate = total ? Math.round((passed / total) * 100) : 0;
+  // ---- Logged-out: show demo loop so the public URL looks real ----
+  if (!authLoading && !user) {
+    return (
+      <Shell>
+        <Banner tone="fixing">
+          Showing demo loop data —{" "}
+          <a href="/auth" className="underline">
+            sign in
+          </a>{" "}
+          to run and stream your own TestSprite loops.
+        </Banner>
+        <LoopView iterations={DEMO_ITERATIONS} startedAt={DEMO_ITERATIONS[0]?.created_at} />
+      </Shell>
+    );
+  }
 
+  if (authLoading || sessionLoading) {
+    return (
+      <Shell>
+        <div className="flex flex-1 items-center justify-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-brand border-t-transparent" />
+        </div>
+      </Shell>
+    );
+  }
+
+  // ---- Logged-in, no session yet ----
+  if (!session) {
+    return (
+      <Shell>
+        <StartSession
+          defaultAppUrl={settings?.app_url ?? ""}
+          defaultProjectId={settings?.testsprite_project_id ?? ""}
+          userId={user!.id}
+          onCreated={setSession}
+        />
+      </Shell>
+    );
+  }
+
+  // ---- Logged-in, active session: live stream ----
+  const nextIteration =
+    iterations.reduce((max, i) => Math.max(max, i.iteration_number), 0) + 1;
+
+  return (
+    <Shell>
+      <ControlsBar
+        session={session}
+        conn={conn}
+        nextIteration={nextIteration}
+        onRefetch={refetch}
+        onNewSession={() => setSession(null)}
+        onEnded={(s) => setSession(s)}
+      />
+      <LoopView
+        iterations={iterations}
+        startedAt={session.started_at}
+        onAnalyze={analyze}
+        analyzingId={analyzingId}
+      />
+    </Shell>
+  );
+}
+
+function Shell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col">
       <AppNav />
-
-      {/* Demo banner */}
-      <div className="border-b border-ink-800 bg-loop-fixing/5 px-6 py-2 text-center text-xs text-loop-fixing">
-        Showing demo loop data — connect a project in{" "}
-        <a href="/settings" className="underline">
-          Settings
-        </a>{" "}
-        to stream real TestSprite runs.
-      </div>
-
-      {/* Stat bar */}
-      <div className="flex flex-wrap items-center gap-6 border-b border-ink-800 px-6 py-3 text-sm">
-        <Stat label="Total loops" value={String(total)} />
-        <Stat label="Passed" value={String(passed)} tone="pass" />
-        <Stat label="Pass rate" value={`${passRate}%`} />
-        <Stat label="Elapsed" value="8m 12s" />
-      </div>
-
-      {/* 3 panels */}
-      <div className="grid flex-1 grid-cols-1 gap-px bg-ink-800 lg:grid-cols-3">
-        <WritePanel iteration={current} />
-        <VerifyPanel iteration={current} />
-        <ResultPanel iteration={current} />
-      </div>
-
-      {/* Timeline */}
-      <Timeline
-        iterations={iterations}
-        selectedId={selectedId}
-        onSelect={setSelectedId}
-      />
+      {children}
     </div>
   );
 }
 
-function Stat({
-  label,
-  value,
+function Banner({
+  children,
   tone,
 }: {
-  label: string;
-  value: string;
-  tone?: "pass";
+  children: React.ReactNode;
+  tone: "fixing" | "pass";
 }) {
   return (
-    <div>
-      <div className="text-xs uppercase tracking-wider text-slate-500">
-        {label}
-      </div>
-      <div
-        className={`text-lg font-semibold ${
-          tone === "pass" ? "text-loop-pass" : "text-white"
-        }`}
-      >
-        {value}
-      </div>
+    <div
+      className={`border-b border-ink-800 px-6 py-2 text-center text-xs ${
+        tone === "fixing"
+          ? "bg-loop-fixing/5 text-loop-fixing"
+          : "bg-loop-pass/5 text-loop-pass"
+      }`}
+    >
+      {children}
     </div>
   );
 }
 
-function PanelShell({
-  title,
-  accent,
-  children,
+function ControlsBar({
+  session,
+  conn,
+  nextIteration,
+  onRefetch,
+  onNewSession,
+  onEnded,
 }: {
-  title: string;
-  accent: string;
-  children: React.ReactNode;
+  session: LoopSession;
+  conn: "disconnected" | "connecting" | "connected";
+  nextIteration: number;
+  onRefetch: () => void;
+  onNewSession: () => void;
+  onEnded: (s: LoopSession) => void;
 }) {
-  return (
-    <section className="flex min-h-[420px] flex-col bg-ink-900">
-      <div className="flex items-center gap-2 border-b border-ink-800 px-5 py-3">
-        <span className={`h-2 w-2 rounded-full ${accent}`} />
-        <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-300">
-          {title}
-        </h2>
-      </div>
-      <div className="flex-1 overflow-auto scroll-thin p-5">{children}</div>
-    </section>
-  );
-}
+  const [simRunning, setSimRunning] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-function WritePanel({ iteration }: { iteration: LoopIteration }) {
+  async function runSimulated() {
+    setSimRunning(true);
+    setError(null);
+    const { error } = await simulateIteration(session.id, nextIteration);
+    if (error) setError(error);
+    onRefetch();
+    setSimRunning(false);
+  }
+
+  async function end() {
+    await endSessionApi(session.id);
+    onEnded({ ...session, status: "completed", ended_at: new Date().toISOString() });
+  }
+
   return (
-    <PanelShell title="Write" accent="bg-loop-fail">
-      <div className="mb-3 flex items-center justify-between text-xs">
-        <span className="font-mono text-slate-400">
-          {iteration.file_changed ?? "—"}
+    <div className="flex flex-wrap items-center justify-between gap-3 border-b border-ink-800 bg-ink-900/60 px-6 py-2.5 text-sm">
+      <div className="flex items-center gap-3">
+        <ConnDot conn={conn} />
+        <span className="font-mono text-xs text-slate-400">{session.app_url}</span>
+        <span
+          className={`rounded-full px-2 py-0.5 text-[11px] ${
+            session.status === "active"
+              ? "bg-loop-fixing/15 text-loop-fixing"
+              : "bg-ink-700 text-slate-400"
+          }`}
+        >
+          {session.status}
         </span>
-        {iteration.agent_name && (
-          <span className="rounded bg-brand/15 px-2 py-0.5 text-brand-light">
-            {iteration.agent_name}
-          </span>
+      </div>
+      <div className="flex items-center gap-2">
+        {error && <span className="text-xs text-loop-fail">{error}</span>}
+        <button
+          onClick={runSimulated}
+          disabled={simRunning || session.status !== "active"}
+          className="rounded-lg bg-brand px-3 py-1.5 font-medium text-white hover:bg-brand-dark disabled:opacity-50"
+          title="Insert a loop iteration to watch the realtime stream update the panels"
+        >
+          {simRunning ? "Running…" : "▶ Simulate iteration"}
+        </button>
+        {session.status === "active" && (
+          <button
+            onClick={end}
+            className="rounded-lg border border-ink-600 px-3 py-1.5 text-slate-300 hover:bg-ink-800"
+          >
+            End
+          </button>
         )}
+        <button
+          onClick={onNewSession}
+          className="rounded-lg border border-ink-600 px-3 py-1.5 text-slate-300 hover:bg-ink-800"
+        >
+          New session
+        </button>
       </div>
-      <pre className="overflow-x-auto scroll-thin rounded-lg border border-ink-700 bg-ink-950 p-4 text-xs leading-relaxed">
-        {(iteration.code_diff ?? "// no diff").split("\n").map((line, i) => {
-          const add = line.startsWith("+");
-          const del = line.startsWith("-");
-          return (
-            <div
-              key={i}
-              className={
-                add ? "diff-add px-1" : del ? "diff-del px-1" : "px-1 text-slate-400"
-              }
-            >
-              <code className="font-mono">{line || " "}</code>
-            </div>
-          );
-        })}
-      </pre>
-    </PanelShell>
-  );
-}
-
-function VerifyPanel({ iteration }: { iteration: LoopIteration }) {
-  const running = iteration.result === "pending";
-  return (
-    <PanelShell title="Verify" accent="bg-loop-fixing">
-      <div className="mb-3 flex items-center justify-between">
-        <span className="text-xs text-slate-400">
-          {iteration.test_name ?? "TestSprite run"}
-        </span>
-        <Verdict result={iteration.result} />
-      </div>
-      <pre className="overflow-x-auto scroll-thin rounded-lg border border-ink-700 bg-ink-950 p-4 font-mono text-xs leading-relaxed text-slate-300">
-        {iteration.cli_output ?? "$ testsprite test run"}
-        {running && <span className="ml-1 inline-block animate-pulse">▋</span>}
-      </pre>
-      {iteration.duration_ms != null && (
-        <div className="mt-2 text-right text-xs text-slate-500">
-          {(iteration.duration_ms / 1000).toFixed(1)}s
-        </div>
-      )}
-    </PanelShell>
-  );
-}
-
-function ResultPanel({ iteration }: { iteration: LoopIteration }) {
-  const failed = iteration.result === "fail";
-  return (
-    <PanelShell title="Result" accent="bg-loop-pass">
-      {iteration.result === "pass" ? (
-        <div className="rounded-xl border border-loop-pass/30 bg-loop-pass/10 p-5">
-          <div className="text-2xl">✅</div>
-          <div className="mt-2 font-semibold text-loop-pass">Passed</div>
-          <div className="mt-1 text-sm text-slate-300">
-            {iteration.test_name}
-          </div>
-        </div>
-      ) : failed ? (
-        <div className="space-y-4">
-          <div className="rounded-xl border border-loop-fail/30 bg-loop-fail/10 p-4">
-            <div className="flex items-center gap-2 font-semibold text-loop-fail">
-              ❌ Failed
-            </div>
-            <div className="mt-1 text-sm text-slate-300">
-              {iteration.test_name}
-            </div>
-          </div>
-
-          {iteration.root_cause && (
-            <Block label="Root cause">{iteration.root_cause}</Block>
-          )}
-
-          {/* Screenshot thumbnail placeholder (real bundle image wired Day 3) */}
-          <div>
-            <div className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-slate-500">
-              Screenshot
-            </div>
-            <div className="flex h-28 items-center justify-center rounded-lg border border-dashed border-ink-600 bg-ink-950 text-xs text-slate-600">
-              failure bundle screenshot
-            </div>
-          </div>
-
-          {iteration.ai_suggestion && (
-            <div className="rounded-xl border border-brand/30 bg-brand/5 p-4">
-              <div className="mb-1 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-brand-light">
-                ✨ AI fix suggestion
-              </div>
-              <p className="text-sm text-slate-300">{iteration.ai_suggestion}</p>
-            </div>
-          )}
-        </div>
-      ) : (
-        <div className="text-sm text-slate-500">Waiting for verdict…</div>
-      )}
-    </PanelShell>
-  );
-}
-
-function Block({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div>
-      <div className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-slate-500">
-        {label}
-      </div>
-      <p className="text-sm text-slate-300">{children}</p>
     </div>
   );
 }
 
-function Verdict({ result }: { result: LoopIteration["result"] }) {
-  if (result === "pass")
-    return <span className="text-xs font-medium text-loop-pass">PASS ✅</span>;
-  if (result === "fail")
-    return <span className="text-xs font-medium text-loop-fail">FAIL ❌</span>;
+function ConnDot({ conn }: { conn: "disconnected" | "connecting" | "connected" }) {
+  const map = {
+    connected: { c: "bg-loop-pass", t: "live" },
+    connecting: { c: "bg-loop-fixing animate-pulse", t: "connecting" },
+    disconnected: { c: "bg-loop-fail", t: "offline" },
+  }[conn];
   return (
-    <span className="flex items-center gap-1.5 text-xs text-loop-fixing">
-      <span className="h-3 w-3 animate-spin rounded-full border-2 border-loop-fixing border-t-transparent" />
-      running
+    <span className="flex items-center gap-1.5 text-xs text-slate-400">
+      <span className={`h-2 w-2 rounded-full ${map.c}`} />
+      {map.t}
     </span>
   );
 }
 
-function Timeline({
-  iterations,
-  selectedId,
-  onSelect,
+function StartSession({
+  defaultAppUrl,
+  defaultProjectId,
+  userId,
+  onCreated,
 }: {
-  iterations: LoopIteration[];
-  selectedId: string | undefined;
-  onSelect: (id: string) => void;
+  defaultAppUrl: string;
+  defaultProjectId: string;
+  userId: string;
+  onCreated: (s: LoopSession) => void;
 }) {
+  const [appUrl, setAppUrl] = useState(defaultAppUrl);
+  const [projectId, setProjectId] = useState(defaultProjectId);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function start(e: React.FormEvent) {
+    e.preventDefault();
+    setBusy(true);
+    setError(null);
+    const { session, error } = await createSession({
+      userId,
+      projectId: projectId || "unset",
+      appUrl,
+    });
+    if (error || !session) {
+      setError(error ?? "Could not create session");
+      setBusy(false);
+      return;
+    }
+    onCreated(session);
+  }
+
   return (
-    <div className="border-t border-ink-800 bg-ink-900 px-6 py-4">
-      <div className="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-500">
-        Loop timeline
-      </div>
-      <div className="flex items-center gap-2 overflow-x-auto scroll-thin pb-1">
-        {iterations.map((it, i) => {
-          const tone =
-            it.result === "pass"
-              ? "bg-loop-pass"
-              : it.result === "fail"
-                ? "bg-loop-fail"
-                : "bg-loop-fixing";
-          const selected = it.id === selectedId;
-          return (
-            <div key={it.id} className="flex items-center gap-2">
-              <button
-                onClick={() => onSelect(it.id)}
-                className={`flex flex-col items-center gap-1 rounded-lg border px-3 py-2 transition ${
-                  selected
-                    ? "border-brand bg-ink-800"
-                    : "border-ink-700 hover:border-ink-600"
-                }`}
-                title={it.test_name ?? undefined}
-              >
-                <span className={`h-3 w-3 rounded-sm ${tone}`} />
-                <span className="text-[10px] text-slate-500">#{it.iteration_number}</span>
-              </button>
-              {i < iterations.length - 1 && (
-                <span className="h-px w-4 bg-ink-700" />
-              )}
-            </div>
-          );
-        })}
-      </div>
+    <div className="flex flex-1 items-center justify-center px-6 py-12">
+      <form
+        onSubmit={start}
+        className="w-full max-w-md rounded-2xl border border-ink-700 bg-ink-850 p-6"
+      >
+        <h1 className="text-xl font-semibold text-white">Start a loop session</h1>
+        <p className="mt-1 text-sm text-slate-400">
+          A session groups the write → verify → fix iterations for one run.
+        </p>
+        <div className="mt-6 space-y-4">
+          <label className="block">
+            <span className="mb-1.5 block text-xs font-medium text-slate-400">
+              App URL under test
+            </span>
+            <input
+              required
+              value={appUrl}
+              onChange={(e) => setAppUrl(e.target.value)}
+              placeholder="https://your-app.vercel.app"
+              className="w-full rounded-lg border border-ink-600 bg-ink-900 px-3 py-2.5 text-sm text-slate-100 placeholder-slate-600 outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+            />
+          </label>
+          <label className="block">
+            <span className="mb-1.5 block text-xs font-medium text-slate-400">
+              TestSprite Project ID{" "}
+              <span className="text-slate-600">(optional for now)</span>
+            </span>
+            <input
+              value={projectId}
+              onChange={(e) => setProjectId(e.target.value)}
+              placeholder="proj_…"
+              className="w-full rounded-lg border border-ink-600 bg-ink-900 px-3 py-2.5 text-sm text-slate-100 placeholder-slate-600 outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+            />
+          </label>
+          {error && <p className="text-sm text-loop-fail">{error}</p>}
+          <button
+            type="submit"
+            disabled={busy}
+            className="w-full rounded-lg bg-brand py-2.5 font-medium text-white hover:bg-brand-dark disabled:opacity-60"
+          >
+            {busy ? "Starting…" : "Start session"}
+          </button>
+        </div>
+      </form>
     </div>
   );
 }

@@ -5,11 +5,15 @@ import Link from "next/link";
 import { AppNav } from "@/components/AppNav";
 import { insforge } from "@/lib/insforge";
 import { useAuth } from "@/lib/AuthProvider";
-import type { LoopSession } from "@/lib/types";
+import { getIterations } from "@/lib/loops";
+import { generateLoopMd } from "@/lib/loopMd";
+import type { LoopSession, LoopIteration } from "@/lib/types";
 
 export default function HistoryPage() {
   const { user, loading } = useAuth();
   const [sessions, setSessions] = useState<LoopSession[] | null>(null);
+  const [loopMd, setLoopMd] = useState<string | null>(null);
+  const [generating, setGenerating] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -23,6 +27,18 @@ export default function HistoryPage() {
     })();
   }, [user]);
 
+  async function generate() {
+    if (!sessions) return;
+    setGenerating(true);
+    const entries = await Promise.all(
+      sessions.map(async (s) => [s.id, await getIterations(s.id)] as const),
+    );
+    const map: Record<string, LoopIteration[]> = {};
+    for (const [id, iters] of entries) map[id] = iters;
+    setLoopMd(generateLoopMd(sessions, map));
+    setGenerating(false);
+  }
+
   return (
     <div className="flex min-h-screen flex-col">
       <AppNav />
@@ -35,10 +51,11 @@ export default function HistoryPage() {
             </p>
           </div>
           <button
-            className="rounded-lg border border-ink-600 px-4 py-2 text-sm text-slate-300 hover:bg-ink-850"
-            title="Coming Day 5"
+            onClick={generate}
+            disabled={generating || !sessions || sessions.length === 0}
+            className="rounded-lg border border-ink-600 px-4 py-2 text-sm text-slate-300 hover:bg-ink-850 disabled:opacity-50"
           >
-            Generate LOOP.md
+            {generating ? "Generating…" : "Generate LOOP.md"}
           </button>
         </div>
 
@@ -98,6 +115,79 @@ export default function HistoryPage() {
           </Empty>
         )}
       </main>
+
+      {loopMd !== null && (
+        <LoopMdModal content={loopMd} onClose={() => setLoopMd(null)} />
+      )}
+    </div>
+  );
+}
+
+function LoopMdModal({
+  content,
+  onClose,
+}: {
+  content: string;
+  onClose: () => void;
+}) {
+  const [copied, setCopied] = useState(false);
+
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(content);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      /* clipboard unavailable */
+    }
+  }
+
+  function download() {
+    const blob = new Blob([content], { type: "text/markdown" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "LOOP.md";
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-6"
+      onClick={onClose}
+    >
+      <div
+        className="flex max-h-[80vh] w-full max-w-3xl flex-col rounded-2xl border border-ink-700 bg-ink-900 shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between border-b border-ink-800 px-5 py-3">
+          <h2 className="font-semibold text-white">LOOP.md</h2>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={copy}
+              className="rounded-lg border border-ink-600 px-3 py-1.5 text-sm text-slate-300 hover:bg-ink-800"
+            >
+              {copied ? "Copied ✓" : "Copy"}
+            </button>
+            <button
+              onClick={download}
+              className="rounded-lg bg-brand px-3 py-1.5 text-sm font-medium text-white hover:bg-brand-dark"
+            >
+              Download
+            </button>
+            <button
+              onClick={onClose}
+              className="rounded-lg border border-ink-600 px-3 py-1.5 text-sm text-slate-300 hover:bg-ink-800"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+        <pre className="flex-1 overflow-auto scroll-thin p-5 text-xs leading-relaxed text-slate-300">
+          <code className="font-mono whitespace-pre-wrap">{content}</code>
+        </pre>
+      </div>
     </div>
   );
 }
