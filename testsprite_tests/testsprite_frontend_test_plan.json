@@ -1,0 +1,1813 @@
+[
+  {
+    "id": "TC001",
+    "title": "Create a new account and reach the dashboard",
+    "description": "A new user can sign up with email and password and arrive on the dashboard after account creation.",
+    "category": "User Authentication",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth"
+      },
+      {
+        "type": "action",
+        "description": "Switch to sign up mode"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the name field with a valid display name"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the dashboard is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC002",
+    "title": "Sign in and reach the dashboard",
+    "description": "An existing user can sign in with email and password and arrive on the dashboard.",
+    "category": "User Authentication",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth"
+      },
+      {
+        "type": "action",
+        "description": "Switch to sign in mode"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the dashboard is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC003",
+    "title": "Start a session from the dashboard",
+    "description": "A signed-in tester can enter the app under test details and start a loop session, resulting in an active session on the dashboard.",
+    "category": "Loop Session Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign in form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the app URL field with a valid app URL"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the project ID field with a valid project ID"
+      },
+      {
+        "type": "action",
+        "description": "Start the session"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the session is active"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify live loop data is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC004",
+    "title": "Inspect the live dashboard overview",
+    "description": "A signed-in user can open the dashboard and see the Write, Verify, Result panels, timeline, and stat tiles.",
+    "category": "Loop Dashboard",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the Write, Verify, and Result panels are displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the loop timeline and stat tiles are displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC005",
+    "title": "End an active session from the dashboard",
+    "description": "A signed-in tester can end an active session and see the dashboard return to an inactive completed state.",
+    "category": "Loop Session Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign in form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the app URL field with a valid app URL"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the project ID field with a valid project ID"
+      },
+      {
+        "type": "action",
+        "description": "Start the session"
+      },
+      {
+        "type": "action",
+        "description": "End the session"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the session is completed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the session is inactive"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC006",
+    "title": "Review live loop progress updates",
+    "description": "A user can watch the loop stream update through the Write, Verify, and Result stages as the session progresses.",
+    "category": "Loop Dashboard",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the current loop stage is displayed in the Write panel"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the loop timeline updates with new iterations"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC007",
+    "title": "Simulate a new iteration during an active session",
+    "description": "A signed-in tester can add a simulated iteration during an active session and see the new iteration appear in the dashboard panels and timeline.",
+    "category": "Loop Session Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign in form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the app URL field with a valid app URL"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the project ID field with a valid project ID"
+      },
+      {
+        "type": "action",
+        "description": "Start the session"
+      },
+      {
+        "type": "action",
+        "description": "Simulate an iteration"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a new iteration is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the timeline updates with the new iteration"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC008",
+    "title": "See the unauthenticated dashboard demo state",
+    "description": "A signed-out visitor can open the dashboard and see the demo loop with a prompt to sign in.",
+    "category": "Loop Dashboard",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the demo loop is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a sign-in prompt is visible"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC009",
+    "title": "Analyze a failed iteration for a fix suggestion",
+    "description": "A signed-in tester can analyze a failed iteration and see AI root cause details with a suggested fix.",
+    "category": "AI Fix Assistant",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign in form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the app URL field with a valid app URL"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the project ID field with a valid project ID"
+      },
+      {
+        "type": "action",
+        "description": "Start the session"
+      },
+      {
+        "type": "action",
+        "description": "Simulate an iteration"
+      },
+      {
+        "type": "action",
+        "description": "Select the failed iteration"
+      },
+      {
+        "type": "action",
+        "description": "Analyze the failure"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify AI failure analysis details are displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a suggested fix snippet is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC010",
+    "title": "Inspect a timeline iteration",
+    "description": "A user can click a timeline block and see the selected iteration reflected in the dashboard panels.",
+    "category": "Loop Dashboard",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Click a timeline block"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the selected iteration is displayed in the panels"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC011",
+    "title": "Start a fresh session after ending the previous one",
+    "description": "A signed-in tester can end one session and immediately start a new one from the dashboard.",
+    "category": "Loop Session Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign in form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the app URL field with a valid app URL"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the project ID field with a valid project ID"
+      },
+      {
+        "type": "action",
+        "description": "Start the session"
+      },
+      {
+        "type": "action",
+        "description": "End the session"
+      },
+      {
+        "type": "action",
+        "description": "Start a new session"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a new active session is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the previous session is no longer active"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC012",
+    "title": "Inspect a specific iteration from the timeline",
+    "description": "A signed-in tester can select an iteration in the dashboard timeline and view the corresponding details in the loop panels.",
+    "category": "Loop Session Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign in form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the app URL field with a valid app URL"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the project ID field with a valid project ID"
+      },
+      {
+        "type": "action",
+        "description": "Start the session"
+      },
+      {
+        "type": "action",
+        "description": "Simulate an iteration"
+      },
+      {
+        "type": "action",
+        "description": "Select the iteration in the timeline"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the selected iteration details are displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the write, verify, and result panels reflect the selected iteration"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC013",
+    "title": "Analyze a failed iteration with AI suggestions",
+    "description": "A user can select a failed iteration and open the AI analysis view to review suggested fixes.",
+    "category": "Loop Dashboard",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Click a failed timeline block"
+      },
+      {
+        "type": "action",
+        "description": "Run the AI fix analysis"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the failed iteration details are displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify AI fix suggestions are displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC014",
+    "title": "View past sessions in history",
+    "description": "A signed-in user can open the history page and review previously run sessions with their key summary data.",
+    "category": "Loop History and LOOP.md Export",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign in form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /history"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify past sessions are displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify session summary data is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC015",
+    "title": "Verify the dashboard summary tiles",
+    "description": "A user can see the loop summary tiles reflecting total loops, passed loops, pass rate, and elapsed time.",
+    "category": "Loop Dashboard",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the total loops tile is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the passed loops, pass rate, and elapsed time tiles are displayed"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC016",
+    "title": "Open a past session replay from history",
+    "description": "A signed-in user can choose a past session in history and open its replay view.",
+    "category": "Loop History and LOOP.md Export",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign in form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /history"
+      },
+      {
+        "type": "action",
+        "description": "Open a past session replay"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the replay view is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the selected session replay content is displayed"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC017",
+    "title": "Generate a LOOP.md report from history",
+    "description": "A signed-in user can generate a LOOP.md report from history and review the generated report in a modal.",
+    "category": "History and Replay",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /history"
+      },
+      {
+        "type": "action",
+        "description": "Generate the LOOP.md report"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the report preview modal is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the LOOP.md report content is displayed"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC018",
+    "title": "Copy the suggested fix from failure analysis",
+    "description": "A signed-in tester can copy the AI suggested fix after analyzing a failed iteration.",
+    "category": "AI Fix Assistant",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign in form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the app URL field with a valid app URL"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the project ID field with a valid project ID"
+      },
+      {
+        "type": "action",
+        "description": "Start the session"
+      },
+      {
+        "type": "action",
+        "description": "Simulate an iteration"
+      },
+      {
+        "type": "action",
+        "description": "Select the failed iteration"
+      },
+      {
+        "type": "action",
+        "description": "Analyze the failure"
+      },
+      {
+        "type": "action",
+        "description": "Copy the suggested fix"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the fix is available to copy"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the copied fix confirmation is visible"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC019",
+    "title": "Step through a replay with playback controls",
+    "description": "A signed-in user can step through a past session replay using the playback controls and scrubber.",
+    "category": "History and Replay",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /session/[id]"
+      },
+      {
+        "type": "action",
+        "description": "Advance the replay using playback controls"
+      },
+      {
+        "type": "action",
+        "description": "Move the scrubber to a different point in the replay"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the displayed iteration changes"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the replay remains visible"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC020",
+    "title": "Open past sessions from history",
+    "description": "A signed-in user can open the history page and view the list of past loop sessions.",
+    "category": "History and Replay",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /history"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the past sessions list is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a replay entry is available"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC021",
+    "title": "Review replay progress with playback controls",
+    "description": "A signed-in user can step through a session replay and scrub between iterations to inspect the run progression.",
+    "category": "Loop History and LOOP.md Export",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign in form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /history"
+      },
+      {
+        "type": "action",
+        "description": "Open a past session replay"
+      },
+      {
+        "type": "action",
+        "description": "Use the playback controls to move through iterations"
+      },
+      {
+        "type": "action",
+        "description": "Scrub the replay timeline"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the displayed iteration changes with playback"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the replay scrubber reflects the selected point in time"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC022",
+    "title": "Resume a past session from the first iteration",
+    "description": "A signed-in user can open a past session replay and step through iterations one by one until the final iteration is shown.",
+    "category": "Session Replay",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign in form"
+      },
+      {
+        "type": "action",
+        "description": "Open a past session replay"
+      },
+      {
+        "type": "action",
+        "description": "Start replay playback"
+      },
+      {
+        "type": "action",
+        "description": "Step forward to the next iteration"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the replay advances through iterations and the current iteration view is shown"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC023",
+    "title": "Open a session replay",
+    "description": "A signed-in user can open a past session and reach its replay view.",
+    "category": "History and Replay",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /history"
+      },
+      {
+        "type": "action",
+        "description": "Open a past session replay"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the session replay is displayed"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC024",
+    "title": "Generate and review a LOOP.md report",
+    "description": "A signed-in user can generate a LOOP.md report from history and view the generated report in a modal.",
+    "category": "Loop History and LOOP.md Export",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign in form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /history"
+      },
+      {
+        "type": "action",
+        "description": "Generate LOOP.md"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the LOOP.md report modal is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the generated report content is displayed"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC025",
+    "title": "Jump to a specific replay point with the scrubber",
+    "description": "A signed-in user can drag the replay scrubber to jump directly to a later iteration in a past session.",
+    "category": "Session Replay",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign in form"
+      },
+      {
+        "type": "action",
+        "description": "Open a past session replay"
+      },
+      {
+        "type": "action",
+        "description": "Move the scrubber to a later point in the session"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the replay jumps to the selected iteration"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC026",
+    "title": "Show an error for invalid sign-in credentials",
+    "description": "A visitor who submits invalid credentials sees an inline authentication error and remains on the sign-in page.",
+    "category": "User Authentication",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth"
+      },
+      {
+        "type": "action",
+        "description": "Switch to sign in mode"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with an invalid email address"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with an invalid password"
+      },
+      {
+        "type": "action",
+        "description": "Submit the form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an inline authentication error is visible"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC027",
+    "title": "Show a replay for a session with iterations",
+    "description": "A signed-in user can open a past session and see the replay interface populated with iteration data.",
+    "category": "Session Replay",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign in form"
+      },
+      {
+        "type": "action",
+        "description": "Open a past session replay"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the replay interface is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify session iteration content is displayed"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC028",
+    "title": "Copy the generated LOOP.md report",
+    "description": "A signed-in user can generate a LOOP.md report and copy its contents from the modal.",
+    "category": "Loop History and LOOP.md Export",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign in form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /history"
+      },
+      {
+        "type": "action",
+        "description": "Generate LOOP.md"
+      },
+      {
+        "type": "action",
+        "description": "Copy the LOOP.md report"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the report content is available to copy"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the copy confirmation is visible"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC029",
+    "title": "Copy or download the LOOP.md report",
+    "description": "A signed-in user can copy or download the generated LOOP.md report after opening the report preview.",
+    "category": "History and Replay",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /history"
+      },
+      {
+        "type": "action",
+        "description": "Generate the LOOP.md report"
+      },
+      {
+        "type": "action",
+        "description": "Copy the report"
+      },
+      {
+        "type": "action",
+        "description": "Download the report"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the report export actions are available"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the generated report remains visible"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC030",
+    "title": "Download the generated LOOP.md report",
+    "description": "A signed-in user can generate a LOOP.md report and download it from the modal.",
+    "category": "Loop History and LOOP.md Export",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign in form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /history"
+      },
+      {
+        "type": "action",
+        "description": "Generate LOOP.md"
+      },
+      {
+        "type": "action",
+        "description": "Download the LOOP.md report"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the report download option is available"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the generated report remains visible in the modal"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC031",
+    "title": "Open the landing page and start authentication",
+    "description": "A visitor can view the landing page and begin the authentication flow from the primary start entry point.",
+    "category": "Landing Page",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Click the primary start option"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the authentication page is displayed"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC032",
+    "title": "Save connection settings from empty form fields",
+    "description": "A signed-in user can enter connection settings from an empty form and successfully save them.",
+    "category": "Connection Settings",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign in form"
+      },
+      {
+        "type": "action",
+        "description": "Open the settings page"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the TestSprite API key field with a valid value"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the project ID field with a valid value"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the app URL field with a valid value"
+      },
+      {
+        "type": "action",
+        "description": "Save the settings"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a success confirmation is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the settings fields are populated"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC033",
+    "title": "Save integration settings",
+    "description": "A signed-in user can save the TestSprite API key, project ID, and app URL on the settings page.",
+    "category": "Settings Persistence and Validation",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /settings"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the API key field with a valid value"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the project ID field with a valid value"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the app URL field with a valid URL"
+      },
+      {
+        "type": "action",
+        "description": "Save the settings"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the saved settings confirmation is visible"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC034",
+    "title": "Save settings and keep them after reload",
+    "description": "A signed-in user can save API key, project ID, and app URL settings and see them persist after reloading the page.",
+    "category": "Settings Persistence and Validation",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign in form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /settings"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the API key field with a valid API key"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the project ID field with a valid project ID"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the app URL field with a valid app URL"
+      },
+      {
+        "type": "action",
+        "description": "Save the settings"
+      },
+      {
+        "type": "action",
+        "description": "Reload the page"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the saved settings values are still present"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a saved confirmation is visible"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC035",
+    "title": "Open the landing page and go to the dashboard",
+    "description": "A visitor can view the landing page and reach the dashboard from the dashboard entry point.",
+    "category": "Landing Page",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Click the dashboard link"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the dashboard is displayed"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC036",
+    "title": "Retain settings after reload",
+    "description": "A signed-in user can reload the settings page and still see previously saved integration values.",
+    "category": "Settings Persistence and Validation",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /settings"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the API key field with a valid value"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the project ID field with a valid value"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the app URL field with a valid URL"
+      },
+      {
+        "type": "action",
+        "description": "Save the settings"
+      },
+      {
+        "type": "action",
+        "description": "Reload the page"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the saved settings values are still populated"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC037",
+    "title": "Retain settings after saving",
+    "description": "A signed-in user can save TestSprite connection settings and see the values remain after reloading the page.",
+    "category": "Connection Settings",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign in form"
+      },
+      {
+        "type": "action",
+        "description": "Open the settings page"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the TestSprite API key field with a valid value"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the project ID field with a valid value"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the app URL field with a valid value"
+      },
+      {
+        "type": "action",
+        "description": "Save the settings"
+      },
+      {
+        "type": "action",
+        "description": "Reload the page"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a success confirmation is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the saved connection values remain populated"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC038",
+    "title": "Enter email verification code when prompted",
+    "description": "If email verification is enabled during sign up, a user can enter the verification code and complete account creation.",
+    "category": "User Authentication",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /auth"
+      },
+      {
+        "type": "action",
+        "description": "Switch to sign up mode"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the name field with a valid display name"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the form"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the verification code field with a valid 6-digit code"
+      },
+      {
+        "type": "action",
+        "description": "Submit the form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the dashboard is displayed"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC039",
+    "title": "Show validation when settings contain invalid values",
+    "description": "A signed-in user sees validation feedback when trying to save malformed settings values.",
+    "category": "Settings Persistence and Validation",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign in form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /settings"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the API key field with an invalid API key"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the project ID field with an invalid project ID"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the app URL field with an invalid app URL"
+      },
+      {
+        "type": "action",
+        "description": "Save the settings"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify validation errors are visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the invalid settings are not saved"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC040",
+    "title": "Update existing connection settings",
+    "description": "A signed-in user can change previously saved TestSprite connection settings and see the updated values persist.",
+    "category": "Connection Settings",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign in form"
+      },
+      {
+        "type": "action",
+        "description": "Open the settings page"
+      },
+      {
+        "type": "action",
+        "description": "Change the TestSprite API key field to a different valid value"
+      },
+      {
+        "type": "action",
+        "description": "Change the project ID field to a different valid value"
+      },
+      {
+        "type": "action",
+        "description": "Change the app URL field to a different valid value"
+      },
+      {
+        "type": "action",
+        "description": "Save the settings"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a success confirmation is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the updated connection values remain populated"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC041",
+    "title": "Keep partial settings unsaved until required fields are complete",
+    "description": "A signed-in user can leave required settings incomplete and see validation that prevents saving partial integration data.",
+    "category": "Settings Persistence and Validation",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /settings"
+      },
+      {
+        "type": "action",
+        "description": "Fill in only the API key field with a valid value"
+      },
+      {
+        "type": "action",
+        "description": "Save the settings"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a validation error is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the settings are not saved"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC042",
+    "title": "View the landing page introduction content",
+    "description": "A visitor can see the core landing page introduction content that explains the product.",
+    "category": "Landing Page",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the landing page headline is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the loop phase cards are displayed"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC043",
+    "title": "Keep partial settings empty without saving incomplete data",
+    "description": "A signed-in user can leave optional settings blank and save only the provided configuration fields without breaking the form.",
+    "category": "Settings Persistence and Validation",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign in form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /settings"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the API key field with a valid API key"
+      },
+      {
+        "type": "action",
+        "description": "Leave the project ID field empty"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the app URL field with a valid app URL"
+      },
+      {
+        "type": "action",
+        "description": "Save the settings"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the form saves successfully with partial values"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the empty field remains empty"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC044",
+    "title": "Display validation for incomplete connection settings",
+    "description": "A signed-in user cannot save connection settings when required fields are missing and should see validation feedback.",
+    "category": "Connection Settings",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign in form"
+      },
+      {
+        "type": "action",
+        "description": "Open the settings page"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the TestSprite API key field with a valid value"
+      },
+      {
+        "type": "action",
+        "description": "Save the settings"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a validation error is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the settings are not saved"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC045",
+    "title": "Show validation for an invalid app URL",
+    "description": "A signed-in user sees validation when entering an invalid app URL in settings.",
+    "category": "Settings Persistence and Validation",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /settings"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the API key field with a valid value"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the project ID field with a valid value"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the app URL field with an invalid URL"
+      },
+      {
+        "type": "action",
+        "description": "Save the settings"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the app URL validation error is visible"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC046",
+    "title": "Keep partially entered settings unsaved until submission",
+    "description": "A signed-in user can open the settings page, make partial edits, and remain on the page without a save confirmation until the form is submitted.",
+    "category": "Connection Settings",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign in form"
+      },
+      {
+        "type": "action",
+        "description": "Open the settings page"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the TestSprite API key field with a valid value"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the settings form remains open for editing"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify no success confirmation is visible yet"
+      }
+    ],
+    "priority": "Low"
+  },
+  {
+    "id": "TC047",
+    "title": "See the placeholder failure artifact area",
+    "description": "A user reviewing a failed iteration can see the placeholder screenshot area in the failure details.",
+    "category": "Loop Dashboard",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Click a failed timeline block"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the failure artifact area is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the screenshot placeholder is displayed"
+      }
+    ],
+    "priority": "Low"
+  }
+]

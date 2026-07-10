@@ -8,6 +8,7 @@ import { LoopMark } from "./LoopMark";
 const LINKS = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/history", label: "History" },
+  { href: "/docs", label: "Docs" },
   { href: "/settings", label: "Settings" },
 ];
 

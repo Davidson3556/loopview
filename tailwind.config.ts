@@ -83,6 +83,18 @@ const config: Config = {
           "0%,100%": { opacity: "0.5" },
           "50%": { opacity: "0.85" },
         },
+        "loading-sweep": {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(650%)" },
+        },
+        marquee: {
+          from: { transform: "translateX(0)" },
+          to: { transform: "translateX(-50%)" },
+        },
+        twinkle: {
+          "0%,100%": { opacity: "0.15" },
+          "50%": { opacity: "1" },
+        },
       },
       animation: {
         "pulse-ring": "pulse-ring 1.6s cubic-bezier(0.4,0,0.6,1) infinite",
@@ -92,6 +104,9 @@ const config: Config = {
         float: "float 6s ease-in-out infinite",
         "gradient-x": "gradient-x 6s ease infinite",
         "glow-breathe": "glow-breathe 4s ease-in-out infinite",
+        "loading-sweep": "loading-sweep 1.3s cubic-bezier(0.45,0,0.55,1) infinite",
+        marquee: "marquee 34s linear infinite",
+        twinkle: "twinkle 3.5s ease-in-out infinite",
       },
     },
   },
