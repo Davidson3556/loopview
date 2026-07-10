@@ -93,7 +93,7 @@ export default function Home() {
         </div>
 
         {/* Centered hero content */}
-        <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-1 flex-col items-center justify-center px-6 pb-24 pt-10 text-center">
+        <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-1 flex-col items-center justify-center px-6 pb-44 pt-10 text-center">
           <div className="animate-slide-up">
             <h1 className="text-balance text-5xl font-semibold leading-[1.02] tracking-tight sm:text-7xl">
               <span className="block bg-gradient-to-b from-slate-300 to-slate-500 bg-clip-text text-transparent">
@@ -128,15 +128,16 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Stack marquee, riding the horizon */}
-        <div className="relative z-10 pb-16">
-          <p className="mb-6 text-center text-[11px] font-semibold uppercase tracking-[0.35em] text-slate-600">
-            Built for the loop you already run
-          </p>
-          <div className="edge-fade-x flex overflow-hidden">
-            <Marquee />
-            <Marquee aria-hidden />
-          </div>
+      </section>
+
+      {/* ===================== STACK MARQUEE ===================== */}
+      <section className="relative z-10 border-y border-white/[0.06] bg-ink-950/50 py-10 backdrop-blur-sm">
+        <p className="mb-7 text-center text-[11px] font-semibold uppercase tracking-[0.35em] text-slate-600">
+          Built for the loop you already run
+        </p>
+        <div className="edge-fade-x flex overflow-hidden">
+          <Marquee />
+          <Marquee aria-hidden />
         </div>
       </section>
 
