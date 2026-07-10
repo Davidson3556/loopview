@@ -1,68 +1,32 @@
-# LoopView — Loop Log
+# LoopView — LOOP.md
 
-This is the real write → verify → fix → verify log from building LoopView. Each
-entry is an iteration where a build/verify step surfaced a problem and a fix
-closed it — the same loop LoopView visualizes. The app also **auto-generates**
-this document from live TestSprite sessions (History → *Generate LOOP.md*); this
-file is the hand-kept record of the development loop itself.
+Each line below is one **write → verify → fix → verify** iteration. LoopView
+visualizes this loop live; this file is the plain-text log. The app also
+auto-generates a LOOP.md from any recorded session (History → *Generate LOOP.md*).
 
----
+## Build loop — dogfooding while building
+1. FAIL → PASS · `npm run build`: Tailwind v4 shipped by create-next-app conflicts with InsForge toolchain → pinned `tailwindcss@3.4` with explicit config.
+2. FAIL → PASS · `db migrations up`: hand-named `0001_init.sql` rejected by CLI validation → regenerated with timestamped filenames, split schema + realtime.
+3. FAIL → PASS · Settings save: assumed a `.upsert()` the InsForge SDK lacks → switched to select-then-update/insert.
+4. FAIL → PASS · InsForge requests hit `…app//api/…` → trimmed trailing slash in the SDK client baseUrl.
+5. FAIL → PASS · Signup sent no verification email ("admin user creation") → root cause: admin API key was used as the public anon key; swapped in the real anon key and rotated the exposed key.
+6. PASS · `/api/ai-fix` returned a valid structured fix from Claude Sonnet on the first call.
 
-## Loop 1 — Tailwind must be v3.4, not v4
-Date: 2026-07-02
-What I built: Project scaffold + Tailwind install
-Test created: build/verify (`npm run build`)
-Result: FAILED
-Root cause: `create-next-app` now ships Tailwind v4, but the InsForge toolchain requires v3.4 — config/PostCSS mismatch.
-Fix: Scaffolded with `--no-tailwind`, then pinned `tailwindcss@3.4.17` with an explicit `tailwind.config.ts` + `postcss.config.mjs`.
-Rerun result: PASSED ✅
+## TestSprite loop — real run on LoopView's own codebase
+7. PASS · TC002 Sign in and reach the dashboard.
+8. PASS · TC004 Inspect the live dashboard overview.
+9. PASS · TC005 End an active session from the dashboard.
+10. FAIL · TC006 Review live loop progress — demo (logged-out) view has no active stream, so the live-update wait times out (expected).
+11. PASS · TC008 See the unauthenticated dashboard demo state.
+12. PASS · TC010 Inspect a timeline iteration.
+13. PASS · TC011 Start a fresh session after ending the previous one.
+14. PASS · TC012 Inspect a specific iteration from the timeline.
+15. PASS · TC013 Analyze a failed iteration with AI suggestions.
+16. PASS · TC014 View past sessions in history.
+17. PASS · TC015 Verify the dashboard summary tiles.
+18. FAIL → PASS · TC001 Create account was **blocked** (sign-up not reachable to the agent) → added `data-testid`/aria-label to the sign-up toggle, `/auth?mode=signup` deep-link, and `/login` `/signup` → `/auth` redirects → re-ran → PASS.
+19. FAIL → PASS · TC003 Start a session (blocked by the same sign-up issue) → fixed by #18 → re-ran → PASS.
+20. FAIL → PASS · TC007 Simulate an iteration (blocked by the same sign-up issue) → fixed by #18 → re-ran → PASS.
+21. FAIL → PASS · TC009 Analyze a failed iteration (blocked by the same sign-up issue) → fixed by #18 → re-ran → PASS.
 
-## Loop 2 — Migration filename rejected by the CLI
-Date: 2026-07-03
-What I built: `migrations/0001_init.sql`
-Test created: `npx @insforge/cli db migrations up --all`
-Result: FAILED
-Root cause: The CLI strictly validates every migration filename as `<timestamp>_<hyphen-name>.sql`; `0001_init.sql` is invalid and blocks the whole batch.
-Fix: Regenerated via `db migrations new create-schema` / `realtime-loop-iterations` and moved the SQL in; split schema and realtime so a realtime error can't block table creation.
-Rerun result: PASSED ✅ (2 migrations applied, verified in `pg_tables`)
-
-## Loop 3 — InsForge SDK has no `.upsert()`
-Date: 2026-07-03
-What I built: Settings save (one row per user)
-Test created: verify Settings persistence
-Result: FAILED
-Root cause: Assumed a Supabase-style `.upsert()`; the InsForge SDK only exposes insert/update/delete/select.
-Fix: Select-then-update-or-insert against the unique `user_id`. Also switched single-object inserts to the required array form `insert([{...}])`.
-Rerun result: PASSED ✅
-
-## Loop 4 — Double-slash in InsForge request URLs
-Date: 2026-07-03
-What I built: InsForge browser client
-Test created: verify API requests resolve
-Result: FAILED
-Root cause: The configured `NEXT_PUBLIC_INSFORGE_URL` had a trailing slash, producing `…app//api/…`.
-Fix: Trim trailing slashes in the client (`baseUrl.replace(/\/+$/, "")`).
-Rerun result: PASSED ✅ (InsForge REST returns 200)
-
-## Loop 5 — Verification codes never arrived
-Date: 2026-07-03
-What I built: Email/password signup
-Test created: manual signup on the deployed URL
-Result: FAILED
-Root cause: `require_email_verification = true` with no SMTP configured; the code path expected an email that wasn't deliverable in that setup.
-Fix: Managed auth declaratively via `insforge.toml` + `config apply` so the setting is explicit and reversible (toggled for testing, then restored).
-Rerun result: PASSED ✅
-
-## Loop 6 — AI fix suggestion, live from the Model Gateway
-Date: 2026-07-03
-What I built: `/api/ai-fix` route (Claude Sonnet via InsForge Model Gateway)
-Test created: live POST with a sample failed iteration
-Result: PASSED ✅ first try
-Root cause: —
-Fix: —
-Rerun result: PASSED ✅ (model `anthropic/claude-sonnet-5`, returned structured `{root_cause, explanation, file, line, fix_snippet}`)
-
----
-
-_Generated and maintained during the TestSprite Season 3 build. Live sessions
-produce their own LOOP.md via the in-app generator._
+**Result:** the TestSprite session closed at **14/15 passing** after the fix. The one remaining fail (TC006) is expected behavior on the logged-out demo view.

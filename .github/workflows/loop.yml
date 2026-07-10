@@ -1,0 +1,36 @@
+name: Loop
+
+# Wires the LoopView loop CLI into CI/CD: on every push we verify the build,
+# then record a loop session into InsForge (which the live dashboard streams).
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  loop:
+    runs-on: ubuntu-latest
+    env:
+      INSFORGE_URL: ${{ secrets.INSFORGE_URL }}
+      INSFORGE_API_KEY: ${{ secrets.INSFORGE_API_KEY }}
+      LOOP_USER_ID: ${{ secrets.LOOP_USER_ID }}
+      APP_URL: https://loopview.vercel.app
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Verify: the app must build.
+      - name: Verify build
+        run: npm run build
+
+      # Record: log this CI run as a loop session in LoopView.
+      # Requires repo secrets: INSFORGE_URL, INSFORGE_API_KEY, LOOP_USER_ID.
+      - name: Record loop session
+        if: ${{ env.INSFORGE_API_KEY != '' }}
+        run: node scripts/loop-runner.mjs --simulate --loops 3
