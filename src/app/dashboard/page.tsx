@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { AppNav } from "@/components/AppNav";
 import { LoopView } from "@/components/LoopView";
+import { LoopMark } from "@/components/LoopMark";
 import { DEMO_ITERATIONS } from "@/lib/demo";
 import { useAuth } from "@/lib/AuthProvider";
 import { insforge } from "@/lib/insforge";
@@ -153,10 +154,10 @@ function Banner({
 }) {
   return (
     <div
-      className={`border-b border-ink-800 px-6 py-2 text-center text-xs ${
+      className={`border-b border-white/[0.06] px-6 py-2 text-center text-xs backdrop-blur ${
         tone === "fixing"
-          ? "bg-loop-fixing/5 text-loop-fixing"
-          : "bg-loop-pass/5 text-loop-pass"
+          ? "bg-loop-fixing/[0.06] text-loop-fixing"
+          : "bg-loop-pass/[0.06] text-loop-pass"
       }`}
     >
       {children}
@@ -197,15 +198,18 @@ function ControlsBar({
   }
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 border-b border-ink-800 bg-ink-900/60 px-6 py-2.5 text-sm">
+    <div className="glass flex flex-wrap items-center justify-between gap-3 border-b px-6 py-3 text-sm">
       <div className="flex items-center gap-3">
         <ConnDot conn={conn} />
-        <span className="font-mono text-xs text-slate-400">{session.app_url}</span>
+        <span className="hidden h-4 w-px bg-white/10 sm:block" />
+        <span className="font-mono text-xs text-slate-400">
+          {session.app_url}
+        </span>
         <span
-          className={`rounded-full px-2 py-0.5 text-[11px] ${
+          className={`chip ${
             session.status === "active"
-              ? "bg-loop-fixing/15 text-loop-fixing"
-              : "bg-ink-700 text-slate-400"
+              ? "border-loop-fixing/30 bg-loop-fixing/10 text-loop-fixing"
+              : "text-slate-400"
           }`}
         >
           {session.status}
@@ -216,23 +220,17 @@ function ControlsBar({
         <button
           onClick={runSimulated}
           disabled={simRunning || session.status !== "active"}
-          className="rounded-lg bg-brand px-3 py-1.5 font-medium text-white hover:bg-brand-dark disabled:opacity-50"
+          className="btn-brand px-3.5 py-1.5 text-sm"
           title="Insert a loop iteration to watch the realtime stream update the panels"
         >
           {simRunning ? "Running…" : "▶ Simulate iteration"}
         </button>
         {session.status === "active" && (
-          <button
-            onClick={end}
-            className="rounded-lg border border-ink-600 px-3 py-1.5 text-slate-300 hover:bg-ink-800"
-          >
+          <button onClick={end} className="btn-ghost px-3 py-1.5 text-sm">
             End
           </button>
         )}
-        <button
-          onClick={onNewSession}
-          className="rounded-lg border border-ink-600 px-3 py-1.5 text-slate-300 hover:bg-ink-800"
-        >
+        <button onClick={onNewSession} className="btn-ghost px-3 py-1.5 text-sm">
           New session
         </button>
       </div>
@@ -240,15 +238,27 @@ function ControlsBar({
   );
 }
 
-function ConnDot({ conn }: { conn: "disconnected" | "connecting" | "connected" }) {
+function ConnDot({
+  conn,
+}: {
+  conn: "disconnected" | "connecting" | "connected";
+}) {
   const map = {
-    connected: { c: "bg-loop-pass", t: "live" },
-    connecting: { c: "bg-loop-fixing animate-pulse", t: "connecting" },
-    disconnected: { c: "bg-loop-fail", t: "offline" },
+    connected: {
+      c: "bg-loop-pass",
+      ring: "shadow-[0_0_10px_2px_rgba(52,211,153,0.6)]",
+      t: "live",
+    },
+    connecting: {
+      c: "bg-loop-fixing animate-pulse",
+      ring: "",
+      t: "connecting",
+    },
+    disconnected: { c: "bg-loop-fail", ring: "", t: "offline" },
   }[conn];
   return (
-    <span className="flex items-center gap-1.5 text-xs text-slate-400">
-      <span className={`h-2 w-2 rounded-full ${map.c}`} />
+    <span className="flex items-center gap-2 text-xs font-medium text-slate-300">
+      <span className={`h-2 w-2 rounded-full ${map.c} ${map.ring}`} />
       {map.t}
     </span>
   );
@@ -289,12 +299,17 @@ function StartSession({
 
   return (
     <div className="flex flex-1 items-center justify-center px-6 py-12">
-      <form
-        onSubmit={start}
-        className="w-full max-w-md rounded-2xl border border-ink-700 bg-ink-850 p-6"
-      >
-        <h1 className="text-xl font-semibold text-white">Start a loop session</h1>
-        <p className="mt-1 text-sm text-slate-400">
+      <form onSubmit={start} className="card w-full max-w-md p-7">
+        <div className="mb-4 flex items-center gap-2.5">
+          <LoopMark size={30} />
+          <span className="chip border-brand/30 bg-brand/10 text-brand-light">
+            new session
+          </span>
+        </div>
+        <h1 className="text-2xl font-semibold tracking-tight text-white">
+          Start a loop session
+        </h1>
+        <p className="mt-1.5 text-sm text-slate-400">
           A session groups the write → verify → fix iterations for one run.
         </p>
         <div className="mt-6 space-y-4">
@@ -307,7 +322,7 @@ function StartSession({
               value={appUrl}
               onChange={(e) => setAppUrl(e.target.value)}
               placeholder="https://your-app.vercel.app"
-              className="w-full rounded-lg border border-ink-600 bg-ink-900 px-3 py-2.5 text-sm text-slate-100 placeholder-slate-600 outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+              className="field"
             />
           </label>
           <label className="block">
@@ -319,15 +334,11 @@ function StartSession({
               value={projectId}
               onChange={(e) => setProjectId(e.target.value)}
               placeholder="proj_…"
-              className="w-full rounded-lg border border-ink-600 bg-ink-900 px-3 py-2.5 text-sm text-slate-100 placeholder-slate-600 outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+              className="field"
             />
           </label>
           {error && <p className="text-sm text-loop-fail">{error}</p>}
-          <button
-            type="submit"
-            disabled={busy}
-            className="w-full rounded-lg bg-brand py-2.5 font-medium text-white hover:bg-brand-dark disabled:opacity-60"
-          >
+          <button type="submit" disabled={busy} className="btn-brand w-full py-2.5">
             {busy ? "Starting…" : "Start session"}
           </button>
         </div>

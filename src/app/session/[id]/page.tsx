@@ -101,7 +101,7 @@ export default function SessionPage({
         </Centered>
       ) : (
         <>
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-ink-800 bg-ink-900/60 px-6 py-3">
+          <div className="glass flex flex-wrap items-center justify-between gap-3 border-b px-6 py-3">
             <div className="flex items-center gap-3">
               <span className="font-mono text-xs text-slate-400">
                 {session.app_url}
@@ -128,7 +128,7 @@ export default function SessionPage({
               <button
                 onClick={() => (playing ? setPlaying(false) : replay())}
                 disabled={iterations.length === 0}
-                className="rounded-lg bg-brand px-3 py-1.5 text-sm font-medium text-white hover:bg-brand-dark disabled:opacity-50"
+                className="btn-brand px-3.5 py-1.5 text-sm disabled:opacity-50"
               >
                 {playing ? "⏸ Pause" : "▶ Replay"}
               </button>

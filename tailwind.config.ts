@@ -11,47 +11,87 @@ const config: Config = {
       colors: {
         // Loop lifecycle states
         loop: {
-          fail: "#f43f5e", // red — test failed
-          fixing: "#f59e0b", // amber — applying fix
-          pass: "#22c55e", // green — test passed
-          pending: "#64748b", // slate — pending/idle
+          fail: "#fb5a74",
+          fixing: "#fbbf24",
+          pass: "#34d399",
+          pending: "#64748b",
         },
-        // Surface palette (dark-first)
+        // Surface palette (dark-first, cool neutral)
         ink: {
-          950: "#080b12",
-          900: "#0b0f17",
-          850: "#0f1420",
-          800: "#141a28",
-          700: "#1c2333",
-          600: "#2a3346",
+          950: "#05070c",
+          900: "#0a0d15",
+          850: "#0e121c",
+          800: "#141926",
+          700: "#1d2334",
+          600: "#2b3348",
+          500: "#3b4560",
         },
         brand: {
           DEFAULT: "#6366f1",
-          light: "#818cf8",
+          light: "#a5b4fc",
           dark: "#4f46e5",
+        },
+        accent: {
+          cyan: "#22d3ee",
+          violet: "#a78bfa",
         },
       },
       fontFamily: {
         sans: ["var(--font-geist-sans)", "system-ui", "sans-serif"],
         mono: ["var(--font-geist-mono)", "ui-monospace", "monospace"],
       },
+      boxShadow: {
+        card: "0 1px 0 0 rgba(255,255,255,0.05) inset, 0 12px 32px -16px rgba(0,0,0,0.8)",
+        elevated:
+          "0 1px 0 0 rgba(255,255,255,0.06) inset, 0 24px 64px -24px rgba(0,0,0,0.85)",
+        "glow-brand": "0 0 0 1px rgba(99,102,241,0.25), 0 0 28px -6px rgba(99,102,241,0.55)",
+        "glow-pass": "0 0 0 1px rgba(52,211,153,0.25), 0 0 24px -6px rgba(52,211,153,0.5)",
+        "glow-fail": "0 0 0 1px rgba(251,90,116,0.25), 0 0 24px -6px rgba(251,90,116,0.5)",
+        "glow-fixing": "0 0 0 1px rgba(251,191,36,0.25), 0 0 24px -6px rgba(251,191,36,0.5)",
+      },
+      backgroundImage: {
+        "grid-fade":
+          "linear-gradient(to right, rgba(148,163,184,0.06) 1px, transparent 1px), linear-gradient(to bottom, rgba(148,163,184,0.06) 1px, transparent 1px)",
+        "loop-gradient":
+          "linear-gradient(90deg, #fb5a74 0%, #fbbf24 50%, #34d399 100%)",
+      },
       keyframes: {
         "pulse-ring": {
-          "0%": { transform: "scale(0.8)", opacity: "0.8" },
-          "100%": { transform: "scale(2.4)", opacity: "0" },
+          "0%": { transform: "scale(0.8)", opacity: "0.7" },
+          "100%": { transform: "scale(2.2)", opacity: "0" },
         },
         "slide-up": {
-          from: { transform: "translateY(8px)", opacity: "0" },
+          from: { transform: "translateY(10px)", opacity: "0" },
           to: { transform: "translateY(0)", opacity: "1" },
+        },
+        "fade-in": {
+          from: { opacity: "0" },
+          to: { opacity: "1" },
         },
         shimmer: {
           "100%": { transform: "translateX(100%)" },
         },
+        float: {
+          "0%,100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-6px)" },
+        },
+        "gradient-x": {
+          "0%,100%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" },
+        },
+        "glow-breathe": {
+          "0%,100%": { opacity: "0.5" },
+          "50%": { opacity: "0.85" },
+        },
       },
       animation: {
-        "pulse-ring": "pulse-ring 1.4s cubic-bezier(0.4,0,0.6,1) infinite",
-        "slide-up": "slide-up 0.3s ease-out",
-        shimmer: "shimmer 1.5s infinite",
+        "pulse-ring": "pulse-ring 1.6s cubic-bezier(0.4,0,0.6,1) infinite",
+        "slide-up": "slide-up 0.35s cubic-bezier(0.16,1,0.3,1)",
+        "fade-in": "fade-in 0.4s ease-out",
+        shimmer: "shimmer 1.6s infinite",
+        float: "float 6s ease-in-out infinite",
+        "gradient-x": "gradient-x 6s ease infinite",
+        "glow-breathe": "glow-breathe 4s ease-in-out infinite",
       },
     },
   },

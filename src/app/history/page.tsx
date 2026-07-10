@@ -53,7 +53,7 @@ export default function HistoryPage() {
           <button
             onClick={generate}
             disabled={generating || !sessions || sessions.length === 0}
-            className="rounded-lg border border-ink-600 px-4 py-2 text-sm text-slate-300 hover:bg-ink-850 disabled:opacity-50"
+            className="btn-brand px-4 py-2 text-sm disabled:opacity-50"
           >
             {generating ? "Generating…" : "Generate LOOP.md"}
           </button>
@@ -78,7 +78,7 @@ export default function HistoryPage() {
                 <Link
                   key={s.id}
                   href={`/session/${s.id}`}
-                  className="flex items-center justify-between rounded-xl border border-ink-700 bg-ink-850 p-5 hover:border-ink-600"
+                  className="card flex items-center justify-between p-5 transition hover:border-white/15"
                 >
                   <div>
                     <div className="font-mono text-sm text-slate-200">
@@ -158,28 +158,19 @@ function LoopMdModal({
       onClick={onClose}
     >
       <div
-        className="flex max-h-[80vh] w-full max-w-3xl flex-col rounded-2xl border border-ink-700 bg-ink-900 shadow-2xl"
+        className="card flex max-h-[80vh] w-full max-w-3xl flex-col shadow-elevated"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between border-b border-ink-800 px-5 py-3">
+        <div className="flex items-center justify-between border-b border-white/[0.06] px-5 py-3">
           <h2 className="font-semibold text-white">LOOP.md</h2>
           <div className="flex items-center gap-2">
-            <button
-              onClick={copy}
-              className="rounded-lg border border-ink-600 px-3 py-1.5 text-sm text-slate-300 hover:bg-ink-800"
-            >
+            <button onClick={copy} className="btn-ghost px-3 py-1.5 text-sm">
               {copied ? "Copied ✓" : "Copy"}
             </button>
-            <button
-              onClick={download}
-              className="rounded-lg bg-brand px-3 py-1.5 text-sm font-medium text-white hover:bg-brand-dark"
-            >
+            <button onClick={download} className="btn-brand px-3 py-1.5 text-sm">
               Download
             </button>
-            <button
-              onClick={onClose}
-              className="rounded-lg border border-ink-600 px-3 py-1.5 text-sm text-slate-300 hover:bg-ink-800"
-            >
+            <button onClick={onClose} className="btn-ghost px-3 py-1.5 text-sm">
               Close
             </button>
           </div>

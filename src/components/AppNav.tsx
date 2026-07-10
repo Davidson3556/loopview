@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/AuthProvider";
+import { LoopMark } from "./LoopMark";
 
 const LINKS = [
   { href: "/dashboard", label: "Dashboard" },
@@ -15,12 +16,14 @@ export function AppNav() {
   const { user, loading, signOut } = useAuth();
 
   return (
-    <header className="border-b border-ink-800 bg-ink-900/60 backdrop-blur">
+    <header className="glass sticky top-0 z-40 border-b">
       <div className="mx-auto flex max-w-[1600px] items-center justify-between px-6 py-3">
         <div className="flex items-center gap-8">
-          <Link href="/" className="flex items-center gap-2">
-            <span className="h-6 w-6 rounded-full bg-brand/30 ring-2 ring-brand/40" />
-            <span className="font-semibold tracking-tight">LoopView</span>
+          <Link href="/" className="flex items-center gap-2.5">
+            <LoopMark size={26} />
+            <span className="font-semibold tracking-tight text-white">
+              LoopView
+            </span>
           </Link>
           <nav className="flex items-center gap-1 text-sm">
             {LINKS.map((l) => {
@@ -29,12 +32,15 @@ export function AppNav() {
                 <Link
                   key={l.href}
                   href={l.href}
-                  className={`rounded-lg px-3 py-1.5 ${
+                  className={`relative rounded-lg px-3 py-1.5 transition ${
                     active
-                      ? "bg-ink-800 text-white"
+                      ? "text-white"
                       : "text-slate-400 hover:text-slate-100"
                   }`}
                 >
+                  {active && (
+                    <span className="absolute inset-0 -z-10 rounded-lg border border-white/10 bg-white/[0.06]" />
+                  )}
                   {l.label}
                 </Link>
               );
@@ -44,22 +50,21 @@ export function AppNav() {
 
         <div className="text-sm">
           {loading ? (
-            <div className="h-4 w-20 animate-pulse rounded bg-ink-700" />
+            <div className="h-8 w-24 animate-pulse rounded-lg bg-white/5" />
           ) : user ? (
             <div className="flex items-center gap-3">
-              <span className="text-slate-400">{user.email}</span>
+              <span className="hidden text-slate-400 sm:inline">
+                {user.email}
+              </span>
               <button
                 onClick={() => void signOut()}
-                className="rounded-lg border border-ink-600 px-3 py-1.5 text-slate-300 hover:bg-ink-800"
+                className="btn-ghost px-3 py-1.5 text-sm"
               >
                 Sign out
               </button>
             </div>
           ) : (
-            <Link
-              href="/auth"
-              className="rounded-lg bg-brand px-3 py-1.5 font-medium text-white hover:bg-brand-dark"
-            >
+            <Link href="/auth" className="btn-brand px-3.5 py-1.5 text-sm">
               Sign in
             </Link>
           )}

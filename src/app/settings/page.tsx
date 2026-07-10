@@ -90,10 +90,7 @@ export default function SettingsPage() {
             to manage your connection settings.
           </div>
         ) : (
-          <form
-            onSubmit={handleSave}
-            className="mt-8 space-y-5 rounded-xl border border-ink-700 bg-ink-850 p-6"
-          >
+          <form onSubmit={handleSave} className="card mt-8 space-y-5 p-6">
             <SettingField
               label="TestSprite API key"
               value={apiKey}
@@ -118,7 +115,7 @@ export default function SettingsPage() {
               <button
                 type="submit"
                 disabled={status === "saving"}
-                className="rounded-lg bg-brand px-5 py-2.5 font-medium text-white hover:bg-brand-dark disabled:opacity-60"
+                className="btn-brand px-5 py-2.5"
               >
                 {status === "saving" ? "Saving…" : "Save settings"}
               </button>
@@ -162,7 +159,7 @@ function SettingField({
         value={value}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full rounded-lg border border-ink-600 bg-ink-900 px-3 py-2.5 text-sm text-slate-100 placeholder-slate-600 outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+        className="field"
       />
     </label>
   );
